@@ -25,7 +25,7 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
     private static final String TAG = "720pFormatStrategy";
     private static final int LONGER_LENGTH = 1280;
     private static final int SHORTER_LENGTH = 720;
-    private static final int DEFAULT_VIDEO_BITRATE = 8000 * 1000; // From Nexus 4 Camera in 720p
+    private static final int DEFAULT_VIDEO_BITRATE = 3000000; // From Nexus 4 Camera in 720p
     private final int mVideoBitrate;
     private final int mAudioBitrate;
     private final int mAudioChannels;
@@ -60,16 +60,19 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
             outWidth = SHORTER_LENGTH;
             outHeight = LONGER_LENGTH;
         }
-        if (longer * 9 != shorter * 16) {
-            throw new OutputFormatUnavailableException("This video is not 16:9, and is not able to transcode. (" + width + "x" + height + ")");
-        }
-        if (shorter <= SHORTER_LENGTH) {
-            Log.d(TAG, "This video is less or equal to 720p, pass-through. (" + width + "x" + height + ")");
-            return null;
-        }
+        
+        
+    double scaleFactor = (outWidth > outHeight) ? 1280 / outWidth : 1280 / outHeight;
+    if(scaleFactor>1){
+        scaleFactor=1;
+    }
+    outWidth = outWidth * scaleFactor;
+    outHeight = outHeight * scaleFactor;
+   
+       
         MediaFormat format = MediaFormat.createVideoFormat("video/avc", outWidth, outHeight);
         // From Nexus 4 Camera in 720p
-        format.setInteger(MediaFormat.KEY_BIT_RATE, mVideoBitrate);
+        format.setInteger(MediaFormat.KEY_BIT_RATE, 3000000);
         format.setInteger(MediaFormat.KEY_FRAME_RATE, 30);
         format.setInteger(MediaFormat.KEY_I_FRAME_INTERVAL, 3);
         format.setInteger(MediaFormat.KEY_COLOR_FORMAT, MediaCodecInfo.CodecCapabilities.COLOR_FormatSurface);
