@@ -66,8 +66,8 @@ class Android720pFormatStrategy implements MediaFormatStrategy {
     if(scaleFactor>1){
         scaleFactor=1;
     }
-    outWidth = outWidth * scaleFactor;
-    outHeight = outHeight * scaleFactor;
+    outWidth = (int) outWidth * scaleFactor;
+    outHeight = (int) outHeight * scaleFactor;
    
        
         MediaFormat format = MediaFormat.createVideoFormat("video/avc", outWidth, outHeight);
